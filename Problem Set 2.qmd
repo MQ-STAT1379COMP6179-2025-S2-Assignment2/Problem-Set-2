@@ -364,5 +364,74 @@ simulate_table <- function(n_men, n_women, success_prob) {
 # Step 2 - Define function to run simulation
 #-------------------------------------------
 
+run_simulation <- function(n_iter, n_men, n_women, success_prob) {
+  p_chisq <- numeric(n_iter)   # Store chi-squared p-values
+  p_fisher <- numeric(n_iter)  # Store Fisher p-values
+  
+  for (i in 1:n_iter) {        # Simulates a new table each time
+    tab <- simulate_table(n_men, n_women, success_prob)
+    
+    # Chi-squared test with Yates correction
+    test_chisq <- suppressWarnings(chisq.test(tab, correct = TRUE))
+    p_chisq[i] <- test_chisq$p.value
+    
+    # Fisher's exact test
+    test_fisher <- fisher.test(tab)
+    p_fisher[i] <- test_fisher$p.value
+  }
+  
+  return(list(chi_sq = p_chisq, fisher = p_fisher))
+}
 
+
+#-----------------------------------
+# Step 3 - Define simulation setting
+#-----------------------------------
+
+#Produce 4 different scenarios
+settings <- list(
+  # Small sample, low success prob
+  small_small  = list(n_men = 20, n_women = 20, prob = 0.2),
+  # Small sample, normal success prob
+  small_normal = list(n_men = 20, n_women = 20, prob = 0.5),
+  # Large sample, low success prob
+  large_small  = list(n_men = 100, n_women = 100, prob = 0.2),
+  # Large sample, normal success prob
+  large_normal = list(n_men = 100, n_women = 100, prob = 0.5)
+)
+
+
+#------------------------
+# Step 4 - Run Simulations
+#------------------------
+
+set.seed(123)      # ensures reproducibility
+n_iter <- 10000    # 10000 contingency tables per setting
+
+# Simulates all 4 scenarios, with chisq and fisher's exact for each
+results <- lapply(settings, function(s) {
+  run_simulation(n_iter, s$n_men, s$n_women, s$prob)
+})
+
+
+#--------------------------------------------------------------------
+# Step 5 - Calculate Rejection Rates at different significance levels
+#--------------------------------------------------------------------
+
+alpha_levels <- c(0.10, 0.05, 0.01)
+
+rejection_rates <- lapply(results, function(res) {
+  sapply(alpha_levels, function(alpha) {
+    c(
+      chisq  = mean(res$chi_sq < alpha),
+      fisher = mean(res$fisher < alpha)
+    )
+  })
+})
+
+rejection_rates
 ```
+
+#### Analysing Rejection Rates:
+
+In both the chi-squared and Fisher's exact tests, rejection rates are conservative with smaller sample sizes and lower probabilites. As these increase, the rejection rates tend to become less conservative, climbing closer to the nominal alpha level. Additionally, lower nominal alpha levels tend to produce more conservative results, especially in smaller sample sizes and lower probabilities. This is due to smaller expected counts limiting the p-values. Overall, Fisher's exact test is consistently valid but slightly conservative in smaller tables, whereas the chi-squared test relies on larger expected counts to more accurately reflect the nominal alpha.
