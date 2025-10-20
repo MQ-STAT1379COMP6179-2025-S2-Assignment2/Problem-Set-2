@@ -338,7 +338,7 @@ head(actor_summary, 10)
 
 The above code in Part B, translated to dbplyr, reflects how many different directors each actor has worked with (unique_directors), alongside the total amount of movies they have appeared in (total_movies). This query may have been motivated by someone looking to find which actors have worked with the most different directors, or alternatively which actors have appeared in the most movies.
 
-## Exercise 4
+## Exercise 4 - Chi-Squared and Fisher's Exact Tests
 
 ```{r}
 library(dplyr)      
