@@ -8,15 +8,20 @@ editor: visual
 ## Exercise 1 - PISA 2022 Visualisations
 
 ```{r pisa-plot1,fig.width=7,fig.height=5}
+
+#-------
+# Plot 1
+#-------
+
 library(tidyverse)
 library(knitr)
 library(here)
 library(ggrepel)
 
-#Loading Dataset
+# Loading Dataset
 pisa <- read.csv("pisa_2022.csv")
 
-#Summarising Averages by Country
+# Summarising Averages by Country
 pisa_summary <- pisa%>%
 group_by(country) %>%
   summarise(
@@ -24,7 +29,7 @@ group_by(country) %>%
     mean_read = mean(read,na.rm = TRUE)
   )
 
-#Creating Scatterplot
+# Creating Scatterplot
 ggplot(pisa_summary,
 aes(x = mean_math, y = mean_read, label = country)) +
 geom_point(size = 2) +
@@ -47,8 +52,9 @@ theme_minimal(base_size = 12)
 
 ```{r pisa-plot2,fig.width=7,fig.height=5}
 
-library(tidyverse)
-library(here)
+#-------
+# Plot 2
+#-------
 
 # Load and summarise again (for clarity)
 pisa <- read_csv(here("pisa_2022.csv"))
@@ -117,7 +123,7 @@ ggplot(pisa_long, aes(x = diff, y = country, color = diff_sign)) +
 
 ## Exercise 2 - GDP Plots
 
-```{r plot 1 & 2, fig.width=7, fig.height=5}
+```{r plot 1, fig.width=7, fig.height=5}
 library(tidyverse)
 library(dplyr)
 library(here)
@@ -181,7 +187,15 @@ ggplot(melbourne, aes(x = Quarter, y = Melbourne)) +
     plot.caption = element_text(hjust = 1, size = 10) # add source
   )
 
-###################################################################################
+```
+
+```{r plot 2, fig.width=7, fig.height=5}
+library(tidyverse)
+library(dplyr)
+library(here)
+library(zoo)
+library(ggplot2)
+
 
 #-------
 # Plot 2 
@@ -434,4 +448,4 @@ rejection_rates
 
 #### Analysing Rejection Rates:
 
-In both the chi-squared and Fisher's exact tests, rejection rates are conservative with smaller sample sizes and lower probabilites. As these increase, the rejection rates tend to become less conservative, climbing closer to the nominal alpha level. Additionally, lower nominal alpha levels tend to produce more conservative results, especially in smaller sample sizes and lower probabilities. This is due to smaller expected counts limiting the p-values. Overall, Fisher's exact test is consistently valid but slightly conservative in smaller tables, whereas the chi-squared test relies on larger expected counts to more accurately reflect the nominal alpha.
+In both the chi-squared and Fisher's exact tests, rejection rates are conservative with smaller sample sizes and lower probabilities. As these increase, the rejection rates tend to become less conservative, climbing closer to the nominal alpha level. Additionally, lower nominal alpha levels tend to produce more conservative results, especially in smaller sample sizes and lower probabilities. This is due to smaller expected counts limiting the p-values. Overall, Fisher's exact test is consistently valid but slightly conservative in smaller tables, whereas the chi-squared test relies on larger expected counts to more accurately reflect the nominal alpha.
