@@ -1,6 +1,7 @@
 ---
 title: "Problem Set 2"
 author: Austin Borg
+bibliography: references.bib
 format: html
 editor: visual
 ---
